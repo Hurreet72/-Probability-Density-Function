@@ -23,16 +23,16 @@ Non-numeric and missing values are removed during preprocessing.
 Each NO₂ value \( x \) is transformed into a new variable \( z \) using the following function:
 
 \[
-z = x + a_r \sin(b_r x)
+z = T_r(x) = x + a_r*sin(b_r*x)
 \]
 
 where,
 
 \[
-a_r = 0.05 \times (r \bmod 7)
+a_r = 0.05 ∗ (r mod 7)
 \]
 \[
-b_r = 0.3 \times ((r \bmod 5) + 1)
+b_r = 0.3 ∗ (r mod 5 + 1)
 \]
 
 Here, \( r \) represents the university roll number. This transformation introduces a controlled non-linearity while remaining deterministic.
@@ -40,31 +40,41 @@ Here, \( r \) represents the university roll number. This transformation introdu
 ---
 
 ### Step 2: Probability Density Function Modeling
-The transformed variable \( z \) is modeled using the following probability density function:
 
-\[
-\hat{p}(z) = c \cdot e^{-\lambda (z - \mu)^2}
-\]
+After applying the roll-number-based transformation, the transformed variable z is modeled using the following probability density function:
 
-This form corresponds to a Gaussian-shaped distribution.
+p̂(z) = c · exp( −λ (z − μ)² )
+
+This function represents a Gaussian-shaped distribution, where:
+- μ controls the center (mean) of the distribution
+- λ controls the spread of the distribution
+- c is a normalization constant
 
 ---
 
 ### Step 3: Parameter Estimation
-The parameters of the probability density function are learned using Maximum Likelihood Estimation (MLE):
 
-- Mean (\( \mu \)) is estimated as the sample mean of \( z \)
-- Variance (\( \sigma^2 \)) is estimated as the sample variance of \( z \)
-- Lambda (\( \lambda \)) is computed as:
-  \[
-  \lambda = \frac{1}{2\sigma^2}
-  \]
-- Normalization constant (\( c \)) is computed as:
-  \[
-  c = \sqrt{\frac{\lambda}{\pi}}
-  \]
+Let z₁, z₂, … , zₙ denote the transformed data samples.
 
-These parameters ensure that the probability density function integrates to one.
+The parameters of the probability density function are estimated using Maximum Likelihood Estimation (MLE) as follows:
+
+• Mean (μ)  
+The mean is computed as the average of the transformed values:
+μ = (1 / N) × Σ zᵢ
+
+• Variance (σ²)  
+The variance is computed as:
+σ² = (1 / N) × Σ (zᵢ − μ)²
+
+• Lambda (λ)  
+Lambda is related to the variance as:
+λ = 1 / (2 × σ²)
+
+• Normalization Constant (c)  
+The normalization constant is computed to ensure that the total probability integrates to one:
+c = √(λ / π)
+
+These parameters completely define the probability density function for the transformed variable z.
 
 ---
 
@@ -92,4 +102,3 @@ Statistical estimation methods are used; no machine learning libraries are invol
 
 ---
 
-## Repository Structure
